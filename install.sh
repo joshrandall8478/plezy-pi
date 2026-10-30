@@ -1,6 +1,15 @@
 #!/bin/bash
 
 clear
+
+# Check if apt is installed. Stop the script if it is not.
+if ! command -v apt > /dev/null 2>&1; then
+    echo "apt is not installed. Quitting script"
+    exit 1
+fi
+
+
+# Confirm with user
 funny_remarks=("Make this anymore legal." "Sue you." "Do your taxes." "Help you get laid.")
 random_index=$(( RANDOM % ${#funny_remarks[@]} ))
 
@@ -23,3 +32,24 @@ What this won't do...
 1. ${funny_remarks[$random_index]}
 
 Proceed? [y/N]"
+
+read -r proceed
+if [ "$proceed" != "y" ] && [ "$proceed" != "Y" ]; then
+    echo "Quitting script"
+    exit 0
+fi
+
+
+
+# Install wget
+echo "Installing wget"
+sudo apt install -y wget
+
+# Install plezy
+echo "Installing plezy"
+wget https://github.com/edde746/plezy/releases/latest/download/plezy-linux-arm64.deb
+sudo apt install -y ./plezy-linux-arm64.deb
+
+# Install the DE, WM, and DM
+echo "Installing lightdm, lxde, and openbox"
+sudo apt install -y lightdm lxde openbox
