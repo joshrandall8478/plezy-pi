@@ -41,6 +41,10 @@ fi
 
 
 
+# Refresh the package lists, since a fresh install's lists may be out of date
+echo "Updating package lists"
+sudo apt update
+
 # Install wget
 echo "Installing wget"
 sudo apt install -y wget
@@ -53,6 +57,11 @@ sudo apt install -y ./plezy-linux-arm64.deb
 # Install the DE, WM, and DM
 echo "Installing lightdm, lxde, and openbox"
 sudo apt install -y lightdm lxde openbox
+
+# Point Xorg at the Pi's display GPU. Lite doesn't include this, and it isn't in Debian's repos.
+echo "Installing Raspberry Pi Xorg GPU setup"
+sudo mkdir -p /etc/X11/xorg.conf.d
+sudo apt install -y gldriver-test
 
 # Install the configs from this repo
 echo "Installing configs"
