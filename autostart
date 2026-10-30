@@ -1,3 +1,4 @@
-@lxpanel --profile LXDE
-@pcmanfm --desktop --profile LXDE
+@xset s off
+@xset s noblank
+@xset -dpms
 @plezy
