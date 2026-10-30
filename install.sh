@@ -53,3 +53,23 @@ sudo apt install -y ./plezy-linux-arm64.deb
 # Install the DE, WM, and DM
 echo "Installing lightdm, lxde, and openbox"
 sudo apt install -y lightdm lxde openbox
+
+# Install the configs from this repo
+echo "Installing configs"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+mkdir -p "$HOME/.config/openbox" "$HOME/.config/lxsession/LXDE"
+cp "$script_dir/lxde-rc.xml" "$HOME/.config/openbox/lxde-rc.xml"
+cp "$script_dir/autostart" "$script_dir/desktop.conf" "$HOME/.config/lxsession/LXDE/"
+
+# Keep the original lightdm config the first time this runs
+if [ -f /etc/lightdm/lightdm.conf ] && [ ! -f /etc/lightdm/lightdm.conf.bak ]; then
+    sudo cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.bak
+fi
+sed "s/CURRENT_USER/$(id -un)/" "$script_dir/lightdm.conf" | sudo tee /etc/lightdm/lightdm.conf > /dev/null
+
+# Boot into the display manager, since Raspberry Pi OS Lite boots to the console
+echo "Enabling lightdm"
+sudo systemctl enable lightdm
+sudo systemctl set-default graphical.target
+
+echo "Done. Reboot to start Plezy."
